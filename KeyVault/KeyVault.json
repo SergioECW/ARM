@@ -1,0 +1,54 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+        {
+            "name": "KeyVaultARM",
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2016-10-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "KeyVaultARM"
+            },
+            "properties": {
+                "enabledForDeployment": true,
+                "enabledForTemplateDeployment": true,
+                "enabledForDiskEncryption": true,
+                "tenantId": "tenantId",
+                "accessPolicies": [
+                    {
+                        "tenantId": "tenantId",
+                        "objectId": "objectId",
+                        "permissions": {
+                            "keys": [
+                                "Get"
+                            ],
+                            "secrets": [
+                                "List",
+                                "Get",
+                                "Set"
+                            ]
+                        }
+                    }
+                ],
+                "sku": {
+                    "name": "standard",
+                    "family": "A"
+                }
+            },
+            "resources": [
+                {
+                    "type": "secrets",
+                    "name": "KeyVaultARM",
+                    "apiVersion": "2016-10-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.KeyVault/vaults', 'KeyVaultARM')]"
+                    ],
+                    "properties": {
+                        "value": "secretValue"
+                    }
+                }
+            ]
+        }
+    ]
+  }

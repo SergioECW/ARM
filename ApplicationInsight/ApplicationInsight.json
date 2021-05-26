@@ -1,0 +1,135 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "ServicePlanArroyoName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ServicePlanArroyoSkuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    }},
+  "variables": {    
+    "ApiName": "[concat('Api', uniqueString(resourceGroup().id))]",
+    "arroyoName": "[concat('arroyo', uniqueString(resourceGroup().id))]",
+    "arroyostorageaccountName": "[concat('arroyostorageaccount', uniqueString(resourceGroup().id))]"},
+  "resources": [
+    {
+      "name": "[parameters('ServicePlanArroyoName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-08-01",
+      "sku": {
+        "name": "[parameters('ServicePlanArroyoSkuName')]"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "ServicePlanArroyo"
+      },
+      "properties": {
+        "name": "[parameters('ServicePlanArroyoName')]",
+        "numberOfWorkers": 1
+      }
+    },
+    {
+      "name": "[concat(parameters('ServicePlanArroyoName'), '-', resourceGroup().name)]",
+      "type": "Microsoft.Insights/autoscalesettings",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName'))]"
+      ],
+      "tags": {
+        "[concat('hidden-link:', resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName')))]": "Resource",
+        "displayName": "insight app AutoScale"
+      },
+      "properties": {
+        "name": "[concat(parameters('ServicePlanArroyoName'), '-', resourceGroup().name)]",
+        "profiles": [
+          {
+            "name": "Default",
+            "capacity": {
+              "minimum": 1,
+              "maximum": 2,
+              "default": 1
+            },
+            "rules": [
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT10M",
+                  "timeAggregation": "Average",
+                  "operator": "GreaterThan",
+                  "threshold": 80
+                },
+                "scaleAction": {
+                  "direction": "Increase",
+                  "type": "ChangeCount",
+                  "value": 1,
+                  "cooldown": "PT10M"
+                }
+              },
+              {
+                "metricTrigger": {
+                  "metricName": "CpuPercentage",
+                  "metricResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName'))]",
+                  "timeGrain": "PT1M",
+                  "statistic": "Average",
+                  "timeWindow": "PT1H",
+                  "timeAggregation": "Average",
+                  "operator": "LessThan",
+                  "threshold": 60
+                },
+                "scaleAction": {
+                  "direction": "Decrease",
+                  "type": "ChangeCount",
+                  "value": 1,
+                  "cooldown": "PT1H"
+                }
+              }
+            ]
+          }
+        ],
+        "enabled": false,
+        "targetResourceUri": "[resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName'))]"
+      }
+    },
+    {
+      "name": "insight app",
+      "type": "Microsoft.Insights/components",
+      "location": "East US",
+      "apiVersion": "2014-04-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', variables('ApiName'))]"
+      ],
+      "tags": {
+        "displayName": "Component insight app"
+      },
+      "properties": {
+        "applicationId": "[resourceId('Microsoft.Web/sites', variables('ApiName'))]"
+      }
+    }
+  ],
+  "outputs": {}
+}
