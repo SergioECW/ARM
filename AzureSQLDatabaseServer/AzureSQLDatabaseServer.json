@@ -80,9 +80,7 @@
         ]
       }},
     "variables": {
-      "WebNodeJSAppName": "[concat('WebNodeJSApp', uniqueString(resourceGroup().id))]",
-      "ApiName": "[concat('Api', uniqueString(resourceGroup().id))]",
-      "arroyoName": "[concat('arroyo', uniqueString(resourceGroup().id))]",
+      "arroyoName": "arroyodbserver",
       "arroyostorageaccountName": "[concat('arroyostorageaccount', uniqueString(resourceGroup().id))]"},
     "resources": [
       {
@@ -109,7 +107,7 @@
         "apiVersion": "2014-04-01-preview",
         "dependsOn": [],
         "tags": {
-          "displayName": "arroyo"
+          "displayName": "ArroyoDBServer"
         },
         "properties": {
           "administratorLogin": "[parameters('arroyoAdminLogin')]",

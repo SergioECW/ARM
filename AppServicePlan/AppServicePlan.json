@@ -24,13 +24,13 @@
                 "family": "F",
                 "capacity": 0
             },
-            "kind": "app,linux",
+            "kind": "linux",
             "properties": {
                 
                 "perSiteScaling": false,
                 "maximumElasticWorkerCount": 1,
                 "isSpot": false,
-                "reserved": false,
+                "reserved": true,
                 "isXenon": false,
                 "hyperV": false,
                 "targetWorkerCount": 0,

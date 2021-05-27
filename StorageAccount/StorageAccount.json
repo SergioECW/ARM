@@ -6,11 +6,11 @@
     "variables": {},
     "resources": [
         {
-            "name": "storageaccountarroyo",
+            "name": "storageaccountarroyoc",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
             "tags": {
-                "displayName": "storageaccountarroyo"
+                "displayName": "storageaccountarroyoc"
             },
             "location": "[resourceGroup().location]",
             "kind": "StorageV2",

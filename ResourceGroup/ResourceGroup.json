@@ -4,17 +4,6 @@
     "parameters": {},
     "functions": [],
     "variables": {},
-    "resources": [
-        {
-            "name": "ResARM",
-            "type": "Microsoft.Resources/resourceGroups",
-            "apiVersion": "2019-10-01",
-            "location": "eastus",
-            "dependsOn": [
-            ],
-            "tags": {
-            }
-        }
-    ],
+    "resources": [],
     "outputs": {}
 }

@@ -28,7 +28,7 @@
       }
     }},
   "variables": {    
-    "ApiName": "[concat('Api', uniqueString(resourceGroup().id))]",
+    "ApiName": "APIccCORE",
     "arroyoName": "[concat('arroyo', uniqueString(resourceGroup().id))]",
     "arroyostorageaccountName": "[concat('arroyostorageaccount', uniqueString(resourceGroup().id))]"},
   "resources": [

@@ -28,7 +28,7 @@
         }
       }},
     "variables": {
-      "WebNodeJSAppName": "[concat('WebNodeJSApp', uniqueString(resourceGroup().id))]",      
+      "WebNodeJSAppName": "NodeJSAppArroyo",      
       "arroyoName": "[concat('arroyo', uniqueString(resourceGroup().id))]",
       "arroyostorageaccountName": "[concat('arroyostorageaccount', uniqueString(resourceGroup().id))]"},
     "resources": [
@@ -37,6 +37,7 @@
         "type": "Microsoft.Web/serverfarms",
         "location": "[resourceGroup().location]",
         "apiVersion": "2015-08-01",
+        "kind": "app,linux",
         "sku": {
           "name": "[parameters('ServicePlanArroyoSkuName')]"
         },
@@ -46,7 +47,9 @@
         },
         "properties": {
           "name": "[parameters('ServicePlanArroyoName')]",
+          "reserved": true,
           "numberOfWorkers": 1
+
         }
       },
       {
@@ -63,25 +66,12 @@
         },
         "properties": {
           "name": "[variables('WebNodeJSAppName')]",
-          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName'))]"
+          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('ServicePlanArroyoName'))]",
+          "siteConfig": {
+            "nodeVersion": "NODE|10.15"
+          }
         },
         "resources": [
-          {
-            "name": "appsettings",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "ResARM",
-            "apiVersion": "2018-11-01",
-            "dependsOn": [
-              "[resourceId('Microsoft.Web/sites', variables('WebNodeJSAppName'))]"
-            ],
-            "tags": {
-              "displayName": "appconfig"
-            },
-            "properties": {
-              "key1": "value1",
-              "key2": "value2"
-            }
-          }
         ]
       }        
     ],
